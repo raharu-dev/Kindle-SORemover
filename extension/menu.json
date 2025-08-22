@@ -1,0 +1,53 @@
+{
+    "items": [
+        {
+            "name": "Kindle-SORemover",
+            "priority": 0,
+            "items": [
+                {
+                    "name": "Backup",
+                    "priority": 1,
+                    "items": [
+                        {
+                            "name": "Soft Backup",
+                            "priority": 1,
+                            "action": "./bin/softbackup.sh"
+                        },
+                        {
+                            "name": "Force Backup",
+                            "priority": 2,
+                            "action": "./bin/forcebackup.sh"
+                        }
+                    ]
+                },
+                {
+                    "name": "Remove Special Offers",
+                    "priority": 2,
+                    "action": "./bin/remove.sh"
+                },
+                {
+                    "name": "Restore Special Offers",
+                    "priority": 3,
+                    "action": "./bin/restore.sh"
+                },
+                {
+                    "name": "Cleanup",
+                    "priority": 4,
+                    "items": [
+                        {
+                            "name": "Delete Old Backups",
+                            "priority": 1,
+                            "action": "./bin/cleanup.sh"
+                        },
+                        {
+                            "name": "Delete all backups",
+                            "priority": 2,
+                            "action": "./bin/fullcleanup.sh"
+                        }
+                    ]
+
+                }
+            ]
+        }
+    ]
+}

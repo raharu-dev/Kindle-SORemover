@@ -19,24 +19,8 @@ if [ ! -d "$BACKUP_PATH" ]; then
     mkdir "$BACKUP_PATH"
 else
     echo "Backup directory already exists"
-    if [ "$(ls -A $BACKUP_PATH)" ]; then
-        echo "Backup directory is not empty"
-        TIMESTAMP=$(date +"%Y-%m-%d-%H%M%S") # i.e. 2025-06-01-123456
-        echo "Moving existing files to $BACKUP_PATH-old/$TIMESTAMP/"
-        mkdir -p "$BACKUP_PATH-old/$TIMESTAMP/"
-        if [ ! -d "$BACKUP_PATH-old/$TIMESTAMP" ]; then
-            echo "Failed to create backup directory for old files"
-        fi
-        FILE_COUNT=$(find "$BACKUP_PATH" -mindepth 1 | wc -l)
-        for entry in "$BACKUP_PATH"/.[!.]* "$BACKUP_PATH"/..?* "$BACKUP_PATH"/*; do
-            [ -e "$entry" ] || continue
-            mv "$entry" "$BACKUP_PATH-old/$TIMESTAMP/"
-        done
-        mv "$BACKUP_PATH"/* "$BACKUP_PATH-old/$TIMESTAMP/"
-        if [ "$FILE_COUNT" -eq $(find "$BACKUP_PATH-old/$TIMESTAMP" -mindepth 1 | wc -l) ]; then
-            echo "Existing files successfully moved to $BACKUP_PATH-old/$TIMESTAMP/"
-        fi
-    fi
+    echo "Aborting operation."
+    exit 1
 fi
 
 if [ ! -d "$BACKUP_PATH" ]; then
