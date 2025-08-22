@@ -27,7 +27,10 @@ else
       echo "Failed to create backup directory for old files"
     fi
     FILE_COUNT=$(find "$BACKUP_PATH" -mindepth 1 | wc -l)
-    mv "$BACKUP_PATH"/* "$BACKUP_PATH-old/$TIMESTAMP/"
+    for entry in "$BACKUP_PATH"/.[!.]* "$BACKUP_PATH"/..?* "$BACKUP_PATH"/*; do
+      [ -e "$entry" ] || continue
+      mv "$entry" "$BACKUP_PATH-old/$TIMESTAMP/"
+    done
     if [ "$FILE_COUNT" -eq $(find "$BACKUP_PATH-old/$TIMESTAMP" -mindepth 1 | wc -l) ]; then
       echo "Existing files successfully moved to $BACKUP_PATH-old/$TIMESTAMP/"
     fi
