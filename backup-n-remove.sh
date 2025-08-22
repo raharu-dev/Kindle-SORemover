@@ -3,13 +3,14 @@ clear
 
 BACKUP_PATH="/mnt/us/BACKUP"
 
-echo -BACKUP & REMOVE-
+echo "-BACKUP & REMOVE-"
 echo Backup directory is: $BACKUP_PATH
 
 if [ ! -d "$BACKUP_PATH" ]; then
   mkdir "$BACKUP_PATH"
 else
   echo "Backup directory already exists"
+  echo
 fi
 
 if [ ! -d "$BACKUP_PATH" ]; then
