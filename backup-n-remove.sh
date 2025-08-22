@@ -28,6 +28,10 @@ else
             echo "Failed to create backup directory for old files"
         fi
         FILE_COUNT=$(find "$BACKUP_PATH" -mindepth 1 | wc -l)
+        for entry in "$BACKUP_PATH"/.[!.]* "$BACKUP_PATH"/..?* "$BACKUP_PATH"/*; do
+            [ -e "$entry" ] || continue
+            mv "$entry" "$BACKUP_PATH-old/$TIMESTAMP/"
+        done
         mv "$BACKUP_PATH"/* "$BACKUP_PATH-old/$TIMESTAMP/"
         if [ "$FILE_COUNT" -eq $(find "$BACKUP_PATH-old/$TIMESTAMP" -mindepth 1 | wc -l) ]; then
             echo "Existing files successfully moved to $BACKUP_PATH-old/$TIMESTAMP/"
@@ -52,6 +56,7 @@ if [ -d "/mnt/us/system/.assets" ]; then
     FILE_COUNT=$(find "/mnt/us/system/.assets" -mindepth 1 | wc -l)
     if [ -d "$BACKUP_PATH/.assets" ] && [ "$BACKUP_COUNT" -eq "$FILE_COUNT" ]; then
         echo "Backed up .assets directory [$BACKUP_COUNT/$FILE_COUNT files]"
+        echo "Removing .assets directory"
         rm -rf "/mnt/us/system/.assets"
         if [ ! -d "/mnt/us/system/.assets" ]; then
             echo "Successfully removed .assets directory"
@@ -67,10 +72,8 @@ if [ -d "/mnt/us/system/.assets" ]; then
 else
   echo "No .assets directory found"
 fi
-
 # /var/local files
 cd /var/local/ || { echo "Failed to change directory to /var/local/"; exit 1; }
-
 # adunits/
 echo "Backing up adunits directory"
 if [ -d "adunits/" ]; then
@@ -79,6 +82,7 @@ if [ -d "adunits/" ]; then
     FILE_COUNT=$(find "adunits/" -mindepth 1 | wc -l)
     if [ -d "$BACKUP_PATH/adunits/" ] && [ "$BACKUP_COUNT" -eq "$FILE_COUNT" ]; then
         echo "Backed up adunits directory [$BACKUP_COUNT/$FILE_COUNT files]"
+        echo "Removing adunits directory"
         rm -rf "adunits/"
         if [ ! -d "adunits/" ]; then
             echo "Successfully removed adunits directory"
@@ -94,7 +98,6 @@ if [ -d "adunits/" ]; then
 else
   echo "No adunits directory found"
 fi
-
 # merchant/
 echo "Backing up merchant directory"
 if [ -d "merchant/" ]; then
@@ -103,6 +106,7 @@ if [ -d "merchant/" ]; then
     FILE_COUNT=$(find "merchant/" -mindepth 1 | wc -l)
     if [ -d "$BACKUP_PATH/merchant/" ] && [ "$BACKUP_COUNT" -eq "$FILE_COUNT" ]; then
         echo "Backed up merchant directory [$BACKUP_COUNT/$FILE_COUNT files]"
+        echo "Removing merchant directory"
         rm -rf "merchant/"
         if [ ! -d "merchant/" ]; then
             echo "Successfully removed merchant directory"
@@ -118,7 +122,6 @@ if [ -d "merchant/" ]; then
 else
     echo "No merchant directory found"
 fi
-
 # appreg.db
 echo "Backing up appreg.db file"
 APPREG=0
@@ -126,6 +129,7 @@ if [ -f "appreg.db" ]; then
     cp appreg.db $BACKUP_PATH/appreg.db
     if [ -f "$BACKUP_PATH/appreg.db" ]; then
         echo "Backed up appreg.db file"
+        echo "Modifying appreg.db file"
         sqlite3 appreg.db "delete from properties where handlerid='dcc' and name='adunit.viewable'"
         sqlite3 appreg.db "delete from properties where handlerid='dcc' and name='dtcp_pref_ShowScreensaverPref'"
         sqlite3 appreg.db "delete from properties where handlerid='dcc' and name='dtcp_pref_ShowBannerPref'"
@@ -148,6 +152,7 @@ fi
 
 # End message
 echo
+echo "Backup and removal process completed."
 if [ "$FAIL_BACKUP_COUNT" -gt 0 ]; then
     echo FAILED TO BACKUP: $FAIL_BACKUP_COUNT files
 fi
