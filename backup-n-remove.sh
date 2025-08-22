@@ -1,16 +1,26 @@
 #!/bin/sh
+set -e
 clear
 
-BACKUP_PATH="/mnt/us/BACKUP"
+BACKUP_PATH="/mnt/us/SO-BACKUP"
 
-echo "-BACKUP & REMOVE-"
-echo Backup directory is: $BACKUP_PATH
+echo "Kindle-SORemover"
+echo "BACKUP & REMOVE"
+echo "Don't worry if some of the files don't exist."
+echo
 
+echo "Backup directory is: $BACKUP_PATH"
+echo
+
+# Creating backup directory and basic checks to not overwrite it.
 if [ ! -d "$BACKUP_PATH" ]; then
   mkdir "$BACKUP_PATH"
 else
   echo "Backup directory already exists"
-  echo
+  if [ "$(ls -A $BACKUP_PATH)" ]; then
+    echo "Backup directory is not empty"
+    exit 1
+  fi
 fi
 
 if [ ! -d "$BACKUP_PATH" ]; then
@@ -18,7 +28,7 @@ if [ ! -d "$BACKUP_PATH" ]; then
   exit 1
 fi
 
-# BACKUP and REMOVAL
+# BACKUP & REMOVAL
 # .assets
 if [ -d "/mnt/us/system/.assets" ]; then
     cp -r /mnt/us/system/.assets $BACKUP_PATH/.assets
@@ -36,9 +46,11 @@ if [ -d "/mnt/us/system/.assets" ]; then
 else
   echo "No .assets directory found"
 fi
-# /var/local files
-cd /var/local/
 
+# /var/local files
+cd /var/local/ || { echo "Failed to change directory to /var/local/"; exit 1; }
+
+# adunits/
 if [ -d "adunits/" ]; then
     cp -r adunits/ $BACKUP_PATH/adunits/
     if [ -d "$BACKUP_PATH/adunits/" ]; then
@@ -56,6 +68,7 @@ else
   echo "No adunits directory found"
 fi
 
+# merchant/
 if [ -d "merchant/" ]; then
     cp -r merchant/ $BACKUP_PATH/merchant/
     if [ -d "$BACKUP_PATH/merchant/" ]; then
@@ -71,13 +84,15 @@ if [ -d "merchant/" ]; then
     fi
   echo "No merchant directory found"
 fi
+
+# appreg.db
 if [ -f "appreg.db" ]; then
     cp appreg.db $BACKUP_PATH/appreg.db
     if [ -f "$BACKUP_PATH/appreg.db" ]; then
         echo "Backed up appreg.db file"
-            sqlite3 /var/local/appreg.db "delete from properties where handlerid='dcc' and name='adunit.viewable'"
-            sqlite3 /var/local/appreg.db "delete from properties where handlerid='dcc' and name='dtcp_pref_ShowScreensaverPref'"
-            sqlite3 /var/local/appreg.db "delete from properties where handlerid='dcc' and name='dtcp_pref_ShowBannerPref'"
+            sqlite3 appreg.db "delete from properties where handlerid='dcc' and name='adunit.viewable'"
+            sqlite3 appreg.db "delete from properties where handlerid='dcc' and name='dtcp_pref_ShowScreensaverPref'"
+            sqlite3 appreg.db "delete from properties where handlerid='dcc' and name='dtcp_pref_ShowBannerPref'"
             # IF MD5sums are different, then it was succesful
             if [ "$(md5sum appreg.db | awk '{print $1}')" != "$(md5sum $BACKUP_PATH/appreg.db | awk '{print $1}')" ]; then
                 echo "appreg.db has been modified."

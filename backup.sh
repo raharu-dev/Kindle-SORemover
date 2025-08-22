@@ -1,5 +1,5 @@
 #!/bin/sh
-BACKUP_PATH="/mnt/us/BACKUP"
+BACKUP_PATH="/mnt/us/SO-BACKUP"
 
 echo $BACKUP_PATH
 mkdir $BACKUP_PATH
