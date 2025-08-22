@@ -59,7 +59,6 @@ if [ -d "/mnt/us/system/.assets" ]; then
 else
   echo "No .assets directory found"
 fi
-
 # /var/local files
 cd /var/local/ || { echo "Failed to change directory to /var/local/"; exit 1; }
 # adunits/
@@ -108,4 +107,6 @@ echo
 echo "Backup process completed."
 if [ "$FAIL_COUNT" -eq 0 ]; then
   echo "All files backed up successfully."
+else
+  echo "However, some files failed to back up."
 fi
