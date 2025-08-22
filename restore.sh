@@ -58,8 +58,8 @@ if [ -d "$BACKUP_PATH/merchant" ]; then
 fi
 # appreg.db
 if [ -f "$BACKUP_PATH/appreg.db" ]; then
-  cp "$BACKUP_PATH/appreg.db" /mnt/us/system/ads/
-  if [ -f "/mnt/us/system/appreg.db" ]; then
+  cp "$BACKUP_PATH/appreg.db" /var/local/
+  if [ -f "/var/local/appreg.db" ]; then
       echo "Restored appreg.db"
       FILE_COUNTER=$((FILE_COUNTER + 1))
   else
