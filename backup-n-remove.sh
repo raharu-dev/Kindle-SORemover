@@ -21,14 +21,15 @@ else
         echo "Backup directory is not empty"
 
         echo "Do you want to continue and possibly overwrite existing files? [y/n]"
-
-        read -r answer
-        while [ "$answer" != "y" ] && [ "$answer" != "Y" ]; do
-            echo "Please enter 'y' to continue or 'n' to abort:"
+        while true; do
             read -r answer
-            if [ "$answer" = "n" ] || [ "$answer" = "N" ]; then
+            if [ "$answer" = "y" ] || [ "$answer" = "Y" ]; then
+                break
+            elif [ "$answer" = "n" ] || [ "$answer" = "N" ]; then
                 echo "Aborted by user."
-                exit 1
+                exit 1 
+            else
+                echo "Please enter 'y' to continue or 'n' to abort:"
             fi
         done
     fi
