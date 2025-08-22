@@ -19,10 +19,11 @@ else
     echo "Backup directory already exists"
     if [ "$(ls -A $BACKUP_PATH)" ]; then
         echo "Backup directory is not empty"
-        echo "Do you want to continue and remove existing files in $BACKUP_PATH? (y/n)"
+
+        echo "Do you want to continue and possibly overwrite existing files? [y/n]"
 
         read -r answer
-        while [ "$answer" != "y" ] || [ "$answer" != "Y" ]; do
+        while [ "$answer" != "y" ] && [ "$answer" != "Y" ]; do
             echo "Please enter 'y' to continue or 'n' to abort:"
             read -r answer
             if [ "$answer" = "n" ] || [ "$answer" = "N" ]; then
@@ -30,7 +31,6 @@ else
                 exit 1
             fi
         done
-        rm -rf "$BACKUP_PATH/*"
     fi
 fi
 
