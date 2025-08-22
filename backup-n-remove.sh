@@ -16,12 +16,22 @@ echo
 if [ ! -d "$BACKUP_PATH" ]; then
   mkdir "$BACKUP_PATH"
 else
-  echo "Backup directory already exists"
-  if [ "$(ls -A $BACKUP_PATH)" ]; then
-    echo "Backup directory is not empty"
-    echo "Please remove or rename the existing backup directory before proceeding."
-    exit 1
-  fi
+    echo "Backup directory already exists"
+    if [ "$(ls -A $BACKUP_PATH)" ]; then
+        echo "Backup directory is not empty"
+        echo "Do you want to continue and remove existing files in $BACKUP_PATH? (y/n)"
+
+        read -r answer
+        while [ "$answer" != "y" ] || [ "$answer" != "Y" ]; do
+            echo "Please enter 'y' to continue or 'n' to abort:"
+            read -r answer
+            if [ "$answer" = "n" ] || [ "$answer" = "N" ]; then
+                echo "Aborted by user."
+                exit 1
+            fi
+        done
+        rm -rf "$BACKUP_PATH/*"
+    fi
 fi
 
 if [ ! -d "$BACKUP_PATH" ]; then
