@@ -6,8 +6,8 @@ BACKUP_PATH="/mnt/us/SO-BACKUP"
 
 echo "Kindle-SORemover"
 echo "RESTORE"
-echo
 
+echo
 echo "Backup is set to: $BACKUP_PATH"
 echo
 
