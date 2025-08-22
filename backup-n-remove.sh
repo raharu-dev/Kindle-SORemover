@@ -1,4 +1,6 @@
 #!/bin/sh
+clear
+
 BACKUP_PATH="/mnt/us/BACKUP"
 
 echo -BACKUP & REMOVE-
