@@ -21,14 +21,17 @@ else
         echo "Backup directory is not empty"
 
         # If the backup path is not empty, copy its content to $BACKUP_PATH-old/<filename>-<date>
-        TIMESTAMP=$(date +"%Y-%m-%d-%H%M%S") # i.e. 2024-06-01-123456
+        if [ ! -d "$BACKUP_PATH-old" ]; then
+            mkdir "$BACKUP_PATH-old"
+        fi
+        TIMESTAMP=$(date +"%Y-%m-%d-%H%M%S") # i.e. 2025-06-01-123456
         cp -a "$BACKUP_PATH" "$BACKUP_PATH-old/$TIMESTAMP/"
     fi
 fi
 
 if [ ! -d "$BACKUP_PATH" ]; then
-  echo "Failed to create backup directory"
-  exit 1
+    echo "Failed to create backup directory"
+    exit 1
 fi
 
 # BACKUP & REMOVAL
