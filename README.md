@@ -24,7 +24,7 @@ Use this tool at your own risk. Removing special offers may violate Amazon's ter
 #### Step 1: Open Terminal Emulator
 - **KTerm:** Just open the app.
 - **KoReader:**  
-  Tap the **Wrench icon** → `More Tools` → `Terminal Emulator` → `Open terminal session`.
+  Tap the ![**Wrench icon**](https://koreader.rocks/user_guide/pictures/top_tools.svg) → `More Tools` → `Terminal Emulator` → `Open terminal session`.
 #### Step 2: Run Removal Command
 - **Backup & Remove Special Offers:** (Recommended)
   ```sh
@@ -37,6 +37,10 @@ Use this tool at your own risk. Removing special offers may violate Amazon's ter
 - **Remove Special Offers Only:**
   ```sh
   curl https://raw.githubusercontent.com/username/repo/branch/remove.sh | sh
+  ```
+- **Restore Backup:**
+  ```sh
+  curl https://raw.githubusercontent.com/username/repo/branch/restore.sh | sh
   ```
 - You can also download the scripts edit them and run them from your device directly.
 ---

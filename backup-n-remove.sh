@@ -1,8 +1,13 @@
 #!/bin/sh
 BACKUP_PATH="/mnt/us/BACKUP"
 
-echo $BACKUP_PATH
-mkdir $BACKUP_PATH
+echo BACKUP directory is: $BACKUP_PATH
+
+if [ ! -d "$BACKUP_PATH" ]; then
+  mkdir "$BACKUP_PATH"
+else
+  echo "Backup directory already exists"
+fi
 
 if [ ! -d "$BACKUP_PATH" ]; then
   echo "Failed to create backup directory"
