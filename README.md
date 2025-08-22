@@ -1,7 +1,7 @@
 # Kindle Special Offer Remover
 ## Overview
 
-**Kindle Special Offer Remover** is a tool for jailbroken Kindle devices that helps you remove Amazon's special offers (ads) easily and safely.  
+**Kindle Special Offer Remover** (AD Remover) is a tool for jailbroken Kindle devices that helps you remove Amazon's special offers (ads) easily and safely.  
 Supports both manual removal and a convenient KUAL extension.
 Tool is mostly based on [BinarySpawn blog](https://www.binaryspawn.com/4/) about removing special offers on Kindle PW2. Use it if official way failed you.
 
