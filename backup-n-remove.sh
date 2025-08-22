@@ -12,6 +12,7 @@ echo
 echo "Backup directory is: $BACKUP_PATH"
 echo
 
+CHANGES=0
 # Creating backup directory and basic checks to not overwrite it.
 if [ ! -d "$BACKUP_PATH" ]; then
   mkdir "$BACKUP_PATH"
@@ -19,12 +20,13 @@ else
     echo "Backup directory already exists"
     if [ "$(ls -A $BACKUP_PATH)" ]; then
         echo "Backup directory is not empty"
-
+        TIMESTAMP=$(date +"%Y-%m-%d-%H%M%S") # i.e. 2025-06-01-123456
+        echo "Moving existing files to $BACKUP_PATH-old/$TIMESTAMP/"
         # If the backup path is not empty, copy its content to $BACKUP_PATH-old/<filename>-<date>
         if [ ! -d "$BACKUP_PATH-old" ]; then
             mkdir "$BACKUP_PATH-old"
         fi
-        TIMESTAMP=$(date +"%Y-%m-%d-%H%M%S") # i.e. 2025-06-01-123456
+        
         cp -a "$BACKUP_PATH" "$BACKUP_PATH-old/$TIMESTAMP/"
         echo "Existing files moved to $BACKUP_PATH-old/$TIMESTAMP/"
     fi
@@ -70,6 +72,7 @@ if [ -d "adunits/" ]; then
         rm -rf "adunits/"
         if [ ! -d "adunits/" ]; then
             echo "Successfully removed adunits directory"
+            CHANGES=$((CHANGES+1))
         else
             echo "Failed to remove adunits directory"
         fi
@@ -90,6 +93,7 @@ if [ -d "merchant/" ]; then
         rm -rf "merchant/"
         if [ ! -d "merchant/" ]; then
             echo "Successfully removed merchant directory"
+            CHANGES=$((CHANGES+1))
         else
             echo "Failed to remove merchant directory"
         fi
@@ -101,6 +105,7 @@ else
 fi
 
 # appreg.db
+APPREG=0
 if [ -f "appreg.db" ]; then
     cp appreg.db $BACKUP_PATH/appreg.db
     if [ -f "$BACKUP_PATH/appreg.db" ]; then
@@ -111,12 +116,27 @@ if [ -f "appreg.db" ]; then
             # IF MD5sums are different, then it was succesful
             if [ "$(md5sum appreg.db | awk '{print $1}')" != "$(md5sum $BACKUP_PATH/appreg.db | awk '{print $1}')" ]; then
                 echo "appreg.db has been modified."
+                CHANGES=$((CHANGES+1))
+                APPREG=1
             else
-                echo "appreg.db appears unchanged. Removal may have failed."
+                echo "appreg.db appears unchanged."
             fi
     else
         echo "Failed to back up appreg.db file"
     fi
 else
   echo "No appreg.db file found"
+fi
+
+# End message
+echo 
+if [ "$CHANGES" -eq 0 ]; then
+    echo "No changes were made."
+    echo "This is expected if ads are already removed."
+else
+    if [ "$APPREG" -eq 1 ]; then
+        echo "Some changes were made, removal was most likely successful."
+    else
+        echo "Some changes were made however the database wasn't modified. Which means that removal was most likely unsuccessful."
+    fi
 fi
