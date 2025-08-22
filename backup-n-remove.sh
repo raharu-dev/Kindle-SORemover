@@ -26,6 +26,7 @@ else
         fi
         TIMESTAMP=$(date +"%Y-%m-%d-%H%M%S") # i.e. 2025-06-01-123456
         cp -a "$BACKUP_PATH" "$BACKUP_PATH-old/$TIMESTAMP/"
+        echo "Existing files moved to $BACKUP_PATH-old/$TIMESTAMP/"
     fi
 fi
 
@@ -35,11 +36,14 @@ if [ ! -d "$BACKUP_PATH" ]; then
 fi
 
 # BACKUP & REMOVAL
+
 # .assets
 if [ -d "/mnt/us/system/.assets" ]; then
     cp -a "/mnt/us/system/.assets" "$BACKUP_PATH/.assets"
-    if [ -d "$BACKUP_PATH/.assets" ] && [ "$(ls -A "$BACKUP_PATH/.assets")" ]; then
-        echo "Backed up .assets directory"
+    BACKUPCOUNT=$(find "$BACKUP_PATH/.assets" -mindepth 1 | wc -l)
+    FILE_COUNT=$(find "/mnt/us/system/.assets" -mindepth 1 | wc -l)
+    if [ -d "$BACKUP_PATH/.assets" ] && [ "$BACKUPCOUNT" -eq "$FILE_COUNT" ]; then
+        echo "Backed up .assets directory [$BACKUPCOUNT files]"
         rm -rf "/mnt/us/system/.assets"
         if [ ! -d "/mnt/us/system/.assets" ]; then
             echo "Successfully removed .assets directory"
@@ -59,8 +63,10 @@ cd /var/local/ || { echo "Failed to change directory to /var/local/"; exit 1; }
 # adunits/
 if [ -d "adunits/" ]; then
     cp -a "adunits/" "$BACKUP_PATH/adunits/"
-    if [ -d "$BACKUP_PATH/adunits/" ] && [ "$(ls -A "$BACKUP_PATH/adunits/")" ]; then
-        echo "Backed up adunits directory"
+    BACKUPCOUNT=$(find "$BACKUP_PATH/adunits/" -mindepth 1 | wc -l)
+    FILE_COUNT=$(find "adunits/" -mindepth 1 | wc -l)
+    if [ -d "$BACKUP_PATH/adunits/" ] && [ "$BACKUPCOUNT" -eq "$FILE_COUNT" ]; then
+        echo "Backed up adunits directory [$BACKUPCOUNT files]"
         rm -rf "adunits/"
         if [ ! -d "adunits/" ]; then
             echo "Successfully removed adunits directory"
@@ -77,8 +83,10 @@ fi
 # merchant/
 if [ -d "merchant/" ]; then
     cp -a "merchant/" "$BACKUP_PATH/merchant/"
-    if [ -d "$BACKUP_PATH/merchant/" ] && [ "$(ls -A "$BACKUP_PATH/merchant/")" ]; then
-        echo "Backed up merchant directory"
+    BACKUPCOUNT=$(find "$BACKUP_PATH/merchant/" -mindepth 1 | wc -l)
+    FILE_COUNT=$(find "merchant/" -mindepth 1 | wc -l)
+    if [ -d "$BACKUP_PATH/merchant/" ] && [ "$BACKUPCOUNT" -eq "$FILE_COUNT" ]; then
+        echo "Backed up merchant directory [$BACKUPCOUNT files]"
         rm -rf "merchant/"
         if [ ! -d "merchant/" ]; then
             echo "Successfully removed merchant directory"
