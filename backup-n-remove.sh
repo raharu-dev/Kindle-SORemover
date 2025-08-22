@@ -20,18 +20,9 @@ else
     if [ "$(ls -A $BACKUP_PATH)" ]; then
         echo "Backup directory is not empty"
 
-        echo "Do you want to continue and possibly overwrite existing files? [y/n]"
-        while true; do
-            read -r answer
-            if [ "$answer" = "y" ] || [ "$answer" = "Y" ]; then
-                break
-            elif [ "$answer" = "n" ] || [ "$answer" = "N" ]; then
-                echo "Aborted by user."
-                exit 1 
-            else
-                echo "Please enter 'y' to continue or 'n' to abort:"
-            fi
-        done
+        # If the backup path is not empty, copy its content to $BACKUP_PATH-old/<filename>-<date>
+        TIMESTAMP=$(date +"%Y-%m-%d-%H%M%S") # i.e. 2024-06-01-123456
+        cp -a "$BACKUP_PATH" "$BACKUP_PATH-old/$TIMESTAMP/"
     fi
 fi
 
