@@ -28,7 +28,7 @@ fi
 
 # .assets
 if [ -d "$BACKUP_PATH/.assets" ]; then
-    cp -r "$BACKUP_PATH/.assets"/* /mnt/us/system/.assets
+    cp -r "$BACKUP_PATH/.assets"/* /mnt/us/system/.assets/
     if [ -d "/mnt/us/system/.assets" ]; then
         echo "Restored .assets directory"
         FILE_COUNTER=$((FILE_COUNTER + 1))
