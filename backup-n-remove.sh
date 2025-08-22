@@ -6,40 +6,46 @@ BACKUP_PATH="/mnt/us/SO-BACKUP"
 
 echo "Kindle-SORemover"
 echo "BACKUP & REMOVE"
-echo "Don't worry if some of the files don't exist."
-echo
 
+echo
+echo "Don't worry if some of the files don't exist."
 echo "Backup directory is: $BACKUP_PATH"
 echo
 
-CHANGES=0
-# Creating backup directory and basic checks to not overwrite it.
+
+# Creating backup directory
 if [ ! -d "$BACKUP_PATH" ]; then
-  mkdir "$BACKUP_PATH"
+    echo "Creating backup directory"
+    mkdir "$BACKUP_PATH"
 else
     echo "Backup directory already exists"
     if [ "$(ls -A $BACKUP_PATH)" ]; then
         echo "Backup directory is not empty"
         TIMESTAMP=$(date +"%Y-%m-%d-%H%M%S") # i.e. 2025-06-01-123456
         echo "Moving existing files to $BACKUP_PATH-old/$TIMESTAMP/"
-        # If the backup path is not empty, copy its content to $BACKUP_PATH-old/<filename>-<date>
-        if [ ! -d "$BACKUP_PATH-old" ]; then
-            mkdir "$BACKUP_PATH-old"
+        mkdir -p "$BACKUP_PATH-old/$TIMESTAMP/"
+        if [ ! -d "$BACKUP_PATH-old/$TIMESTAMP" ]; then
+            echo "Failed to create backup directory for old files"
         fi
-        
-        cp -a "$BACKUP_PATH" "$BACKUP_PATH-old/$TIMESTAMP/"
-        echo "Existing files moved to $BACKUP_PATH-old/$TIMESTAMP/"
+        FILE_COUNT=$(find "$BACKUP_PATH" -mindepth 1 | wc -l)
+        mv "$BACKUP_PATH"/* "$BACKUP_PATH-old/$TIMESTAMP/"
+        if [ "$FILE_COUNT" -eq $(find "$BACKUP_PATH-old/$TIMESTAMP" -mindepth 1 | wc -l) ]; then
+            echo "Existing files successfully moved to $BACKUP_PATH-old/$TIMESTAMP/"
+        fi
     fi
 fi
 
 if [ ! -d "$BACKUP_PATH" ]; then
     echo "Failed to create backup directory"
+    echo "Aborting operation."
     exit 1
 fi
 
 # BACKUP & REMOVAL
-
+CHANGE_COUNT=0
+FAIL_BACKUP_COUNT=0
 # .assets
+echo "Backing up .assets directory"
 if [ -d "/mnt/us/system/.assets" ]; then
     cp -a "/mnt/us/system/.assets" "$BACKUP_PATH/.assets"
     BACKUPCOUNT=$(find "$BACKUP_PATH/.assets" -mindepth 1 | wc -l)
@@ -49,11 +55,14 @@ if [ -d "/mnt/us/system/.assets" ]; then
         rm -rf "/mnt/us/system/.assets"
         if [ ! -d "/mnt/us/system/.assets" ]; then
             echo "Successfully removed .assets directory"
+            CHANGE_COUNT=$((CHANGE_COUNT+1))
         else
             echo "Failed to remove .assets directory"
         fi
     else
-        echo "Failed to back up .assets directory; not removing original."
+        FAIL_BACKUP_COUNT=$((FAIL_BACKUP_COUNT+FILE_COUNT))
+        echo "Failed to back up .assets directory. ($FILE_COUNT files)"
+        echo "Aborting deletion of this directory."
     fi
 else
   echo "No .assets directory found"
@@ -63,6 +72,7 @@ fi
 cd /var/local/ || { echo "Failed to change directory to /var/local/"; exit 1; }
 
 # adunits/
+echo "Backing up adunits directory"
 if [ -d "adunits/" ]; then
     cp -a "adunits/" "$BACKUP_PATH/adunits/"
     BACKUPCOUNT=$(find "$BACKUP_PATH/adunits/" -mindepth 1 | wc -l)
@@ -72,18 +82,21 @@ if [ -d "adunits/" ]; then
         rm -rf "adunits/"
         if [ ! -d "adunits/" ]; then
             echo "Successfully removed adunits directory"
-            CHANGES=$((CHANGES+1))
+            CHANGE_COUNT=$((CHANGE_COUNT+1))
         else
             echo "Failed to remove adunits directory"
         fi
     else
-        echo "Failed to back up adunits directory; not removing original."
+        FAIL_BACKUP_COUNT=$((FAIL_BACKUP_COUNT+FILE_COUNT))
+        echo "Failed to back up adunits directory. ($FILE_COUNT files)"
+        echo "Aborting deletion of this directory."
     fi
 else
   echo "No adunits directory found"
 fi
 
 # merchant/
+echo "Backing up merchant directory"
 if [ -d "merchant/" ]; then
     cp -a "merchant/" "$BACKUP_PATH/merchant/"
     BACKUPCOUNT=$(find "$BACKUP_PATH/merchant/" -mindepth 1 | wc -l)
@@ -93,50 +106,58 @@ if [ -d "merchant/" ]; then
         rm -rf "merchant/"
         if [ ! -d "merchant/" ]; then
             echo "Successfully removed merchant directory"
-            CHANGES=$((CHANGES+1))
+            CHANGE_COUNT=$((CHANGE_COUNT+1))
         else
             echo "Failed to remove merchant directory"
         fi
     else
-        echo "Failed to back up merchant directory; not removing original."
+        FAIL_BACKUP_COUNT=$((FAIL_BACKUP_COUNT+FILE_COUNT))
+        echo "Failed to back up merchant directory. ($FILE_COUNT files)"
+        echo "Aborting deletion of this directory."
     fi
 else
-  echo "No merchant directory found"
+    echo "No merchant directory found"
 fi
 
 # appreg.db
+echo "Backing up appreg.db file"
 APPREG=0
 if [ -f "appreg.db" ]; then
     cp appreg.db $BACKUP_PATH/appreg.db
     if [ -f "$BACKUP_PATH/appreg.db" ]; then
         echo "Backed up appreg.db file"
-            sqlite3 appreg.db "delete from properties where handlerid='dcc' and name='adunit.viewable'"
-            sqlite3 appreg.db "delete from properties where handlerid='dcc' and name='dtcp_pref_ShowScreensaverPref'"
-            sqlite3 appreg.db "delete from properties where handlerid='dcc' and name='dtcp_pref_ShowBannerPref'"
-            # IF MD5sums are different, then it was succesful
-            if [ "$(md5sum appreg.db | awk '{print $1}')" != "$(md5sum $BACKUP_PATH/appreg.db | awk '{print $1}')" ]; then
-                echo "appreg.db has been modified."
-                CHANGES=$((CHANGES+1))
-                APPREG=1
-            else
-                echo "appreg.db appears unchanged."
-            fi
+        sqlite3 appreg.db "delete from properties where handlerid='dcc' and name='adunit.viewable'"
+        sqlite3 appreg.db "delete from properties where handlerid='dcc' and name='dtcp_pref_ShowScreensaverPref'"
+        sqlite3 appreg.db "delete from properties where handlerid='dcc' and name='dtcp_pref_ShowBannerPref'"
+        # IF MD5sums are different, then it was succesful
+        if [ "$(md5sum appreg.db | awk '{print $1}')" != "$(md5sum $BACKUP_PATH/appreg.db | awk '{print $1}')" ]; then
+            echo "appreg.db has been modified."
+            CHANGE_COUNT=$((CHANGE_COUNT+1))
+            APPREG=1
+        else
+            echo "appreg.db appears unchanged."
+        fi
     else
+        FAIL_BACKUP_COUNT=$((FAIL_BACKUP_COUNT+1))
         echo "Failed to back up appreg.db file"
+        echo "Aborting modification of appreg.db"
     fi
 else
-  echo "No appreg.db file found"
+    echo "No appreg.db file found"
 fi
 
 # End message
-echo 
-if [ "$CHANGES" -eq 0 ]; then
+echo
+if [ "$FAIL_BACKUP_COUNT" -gt 0 ]; then
+    echo FAILED TO BACKUP: $FAIL_BACKUP_COUNT files
+fi
+echo CHANGES: $CHANGE_COUNT
+if [ "$CHANGE_COUNT" -eq 0 ]; then
     echo "No changes were made."
-    echo "This is expected if ads are already removed."
 else
     if [ "$APPREG" -eq 1 ]; then
-        echo "Some changes were made, removal was most likely successful."
+        echo "Removal was most likely successful."
     else
-        echo "Some changes were made however the database wasn't modified. Which means that removal was most likely unsuccessful."
+        echo "Database is unchanged removal was most likely unsuccessful."
     fi
 fi
