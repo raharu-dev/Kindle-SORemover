@@ -55,11 +55,12 @@ fi
 echo "Backing up appreg.db file"
 APPREG=0
 if [ -f "appreg.db" ]; then
+  APPREGMD5=$(md5sum appreg.db | awk '{print $1}')
   sqlite3 appreg.db "delete from properties where handlerid='dcc' and name='adunit.viewable'"
   sqlite3 appreg.db "delete from properties where handlerid='dcc' and name='dtcp_pref_ShowScreensaverPref'"
   sqlite3 appreg.db "delete from properties where handlerid='dcc' and name='dtcp_pref_ShowBannerPref'"
   # IF MD5sums are different, then it was succesful
-  if [ "$(md5sum appreg.db | awk '{print $1}')" != "$(md5sum $BACKUP_PATH/appreg.db | awk '{print $1}')" ]; then
+  if [ "$(md5sum appreg.db | awk '{print $1}')" != "$APPREGMD5" ]; then
     echo "appreg.db has been modified."
     CHANGE_COUNT=$((CHANGE_COUNT+1))
     APPREG=1
