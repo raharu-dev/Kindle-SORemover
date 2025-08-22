@@ -48,10 +48,10 @@ FAIL_BACKUP_COUNT=0
 echo "Backing up .assets directory"
 if [ -d "/mnt/us/system/.assets" ]; then
     cp -a "/mnt/us/system/.assets" "$BACKUP_PATH/.assets"
-    BACKUPCOUNT=$(find "$BACKUP_PATH/.assets" -mindepth 1 | wc -l)
+    BACKUP_COUNT=$(find "$BACKUP_PATH/.assets" -mindepth 1 | wc -l)
     FILE_COUNT=$(find "/mnt/us/system/.assets" -mindepth 1 | wc -l)
-    if [ -d "$BACKUP_PATH/.assets" ] && [ "$BACKUPCOUNT" -eq "$FILE_COUNT" ]; then
-        echo "Backed up .assets directory [$BACKUPCOUNT files]"
+    if [ -d "$BACKUP_PATH/.assets" ] && [ "$BACKUP_COUNT" -eq "$FILE_COUNT" ]; then
+        echo "Backed up .assets directory [$BACKUP_COUNT/$FILE_COUNT files]"
         rm -rf "/mnt/us/system/.assets"
         if [ ! -d "/mnt/us/system/.assets" ]; then
             echo "Successfully removed .assets directory"
@@ -61,7 +61,7 @@ if [ -d "/mnt/us/system/.assets" ]; then
         fi
     else
         FAIL_BACKUP_COUNT=$((FAIL_BACKUP_COUNT+FILE_COUNT))
-        echo "Failed to back up .assets directory. ($FILE_COUNT files)"
+        echo "Failed to back up .assets directory. [$BACKUP_COUNT/$FILE_COUNT files]"
         echo "Aborting deletion of this directory."
     fi
 else
@@ -75,10 +75,10 @@ cd /var/local/ || { echo "Failed to change directory to /var/local/"; exit 1; }
 echo "Backing up adunits directory"
 if [ -d "adunits/" ]; then
     cp -a "adunits/" "$BACKUP_PATH/adunits/"
-    BACKUPCOUNT=$(find "$BACKUP_PATH/adunits/" -mindepth 1 | wc -l)
+    BACKUP_COUNT=$(find "$BACKUP_PATH/adunits/" -mindepth 1 | wc -l)
     FILE_COUNT=$(find "adunits/" -mindepth 1 | wc -l)
-    if [ -d "$BACKUP_PATH/adunits/" ] && [ "$BACKUPCOUNT" -eq "$FILE_COUNT" ]; then
-        echo "Backed up adunits directory [$BACKUPCOUNT files]"
+    if [ -d "$BACKUP_PATH/adunits/" ] && [ "$BACKUP_COUNT" -eq "$FILE_COUNT" ]; then
+        echo "Backed up adunits directory [$BACKUP_COUNT/$FILE_COUNT files]"
         rm -rf "adunits/"
         if [ ! -d "adunits/" ]; then
             echo "Successfully removed adunits directory"
@@ -88,7 +88,7 @@ if [ -d "adunits/" ]; then
         fi
     else
         FAIL_BACKUP_COUNT=$((FAIL_BACKUP_COUNT+FILE_COUNT))
-        echo "Failed to back up adunits directory. ($FILE_COUNT files)"
+        echo "Failed to back up adunits directory. [$BACKUP_COUNT/$FILE_COUNT files]"
         echo "Aborting deletion of this directory."
     fi
 else
@@ -99,10 +99,10 @@ fi
 echo "Backing up merchant directory"
 if [ -d "merchant/" ]; then
     cp -a "merchant/" "$BACKUP_PATH/merchant/"
-    BACKUPCOUNT=$(find "$BACKUP_PATH/merchant/" -mindepth 1 | wc -l)
+    BACKUP_COUNT=$(find "$BACKUP_PATH/merchant/" -mindepth 1 | wc -l)
     FILE_COUNT=$(find "merchant/" -mindepth 1 | wc -l)
-    if [ -d "$BACKUP_PATH/merchant/" ] && [ "$BACKUPCOUNT" -eq "$FILE_COUNT" ]; then
-        echo "Backed up merchant directory [$BACKUPCOUNT files]"
+    if [ -d "$BACKUP_PATH/merchant/" ] && [ "$BACKUP_COUNT" -eq "$FILE_COUNT" ]; then
+        echo "Backed up merchant directory [$BACKUP_COUNT/$FILE_COUNT files]"
         rm -rf "merchant/"
         if [ ! -d "merchant/" ]; then
             echo "Successfully removed merchant directory"
@@ -112,7 +112,7 @@ if [ -d "merchant/" ]; then
         fi
     else
         FAIL_BACKUP_COUNT=$((FAIL_BACKUP_COUNT+FILE_COUNT))
-        echo "Failed to back up merchant directory. ($FILE_COUNT files)"
+        echo "Failed to back up merchant directory. [$BACKUP_COUNT/$FILE_COUNT files]"
         echo "Aborting deletion of this directory."
     fi
 else
