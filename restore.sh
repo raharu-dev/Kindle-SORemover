@@ -8,17 +8,17 @@ echo "Kindle-SORemover"
 echo "RESTORE"
 echo
 
-echo "Backup directory is: $BACKUP_PATH"
+echo "Backup is set to: $BACKUP_PATH"
 echo
 
 if [ -d "$BACKUP_PATH" ]; then
-  echo "Restoring from backup directory: $BACKUP_PATH"
+  echo "Restoring from backup directory."
 else
   echo "Backup directory not found."
   exit 1
 fi
 
-FILE_COUNT=$(find "$BACKUP_PATH" -mindepth 1 \( -type f -o -type d \) | wc -l)
+FILE_COUNT=$(find "$BACKUP_PATH" -mindepth 1 -maxdepth 1 | wc -l)
 FILE_COUNTER=0
 
 if [ "$FILE_COUNT" -eq 0 ]; then
