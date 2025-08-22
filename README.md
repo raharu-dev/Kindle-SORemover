@@ -21,6 +21,8 @@ This tool is for research purposes only. Use this tool at your own risk.
 - Terminal emulator (KTerm or KoReader) **or** KUAL installed
 
 ## Usage
+### ❗IMPORTANT NOTICE❗
+#### ❗AFTER BACKING UP THE DATA MOVE IT TO SAFE LOCATION ON YOUR PC TO NOT LOSE IT❗
 ### 1. KUAL Extension (Coming Soon™)
 1. [Download the KUAL extension](https://github.com/username/repo/releases)
 2. Copy the extension directory to your Kindle's `extensions` folder.
@@ -42,7 +44,7 @@ This tool is for research purposes only. Use this tool at your own risk.
   ```sh
   curl https://raw.githubusercontent.com/raharu-dev/Kindle-SORemover/main/remove.sh | sh
   ```
-- **Restore Backup:**
+- **Restore Special Offers Backup:**
   ```sh
   curl https://raw.githubusercontent.com/raharu-dev/Kindle-SORemover/main/restore.sh | sh
   ```
@@ -76,7 +78,7 @@ This tool is for research purposes only. Use this tool at your own risk.
     ```sh
     ./remove.sh
     ```
-- **Restore Backup:**
+- **Restore Special Offers Backup:**
     ```sh
     ./restore.sh
     ```
