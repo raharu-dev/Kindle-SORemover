@@ -45,12 +45,12 @@ FAIL_COUNT=0
 # .assets
 if [ -d "/mnt/us/system/.assets" ]; then
   cp -a "/mnt/us/system/.assets" "$BACKUP_PATH/.assets"
-  BACKUPCOUNT=$(find "$BACKUP_PATH/.assets" -mindepth 1 | wc -l)
+  BACKUP_COUNT=$(find "$BACKUP_PATH/.assets" -mindepth 1 | wc -l)
   FILE_COUNT=$(find "/mnt/us/system/.assets" -mindepth 1 | wc -l)
-  if [ -d "$BACKUP_PATH/.assets" ] && [ "$BACKUPCOUNT" -eq "$FILE_COUNT" ]; then
-    echo "Backed up .assets directory [$BACKUPCOUNT files]"
+  if [ -d "$BACKUP_PATH/.assets" ] && [ "$BACKUP_COUNT" -eq "$FILE_COUNT" ]; then
+    echo "Backed up .assets directory [$BACKUP_COUNT/$FILE_COUNT files]"
   else
-    echo "Failed to back up .assets directory."
+    echo "Failed to back up .assets directory. [$BACKUP_COUNT/$FILE_COUNT files]"
     FAIL_COUNT=$((FAIL_COUNT+FILE_COUNT))
   fi
 else
@@ -62,12 +62,12 @@ cd /var/local/ || { echo "Failed to change directory to /var/local/"; exit 1; }
 # adunits/
 if [ -d "adunits/" ]; then
   cp -a "adunits/" "$BACKUP_PATH/adunits/"
-  BACKUPCOUNT=$(find "$BACKUP_PATH/adunits/" -mindepth 1 | wc -l)
+  BACKUP_COUNT=$(find "$BACKUP_PATH/adunits/" -mindepth 1 | wc -l)
   FILE_COUNT=$(find "adunits/" -mindepth 1 | wc -l)
-  if [ -d "$BACKUP_PATH/adunits/" ] && [ "$BACKUPCOUNT" -eq "$FILE_COUNT" ]; then
-    echo "Backed up adunits directory [$BACKUPCOUNT files]"
+  if [ -d "$BACKUP_PATH/adunits/" ] && [ "$BACKUP_COUNT" -eq "$FILE_COUNT" ]; then
+    echo "Backed up adunits directory [$BACKUP_COUNT/$FILE_COUNT files]"
   else
-    echo "Failed to back up adunits directory."
+    echo "Failed to back up adunits directory. [$BACKUP_COUNT/$FILE_COUNT files]"
     FAIL_COUNT=$((FAIL_COUNT+FILE_COUNT))
   fi
 else
@@ -76,12 +76,12 @@ fi
 # merchant/
 if [ -d "merchant/" ]; then
   cp -a "merchant/" "$BACKUP_PATH/merchant/"
-  BACKUPCOUNT=$(find "$BACKUP_PATH/merchant/" -mindepth 1 | wc -l)
+  BACKUP_COUNT=$(find "$BACKUP_PATH/merchant/" -mindepth 1 | wc -l)
   FILE_COUNT=$(find "merchant/" -mindepth 1 | wc -l)
-  if [ -d "$BACKUP_PATH/merchant/" ] && [ "$BACKUPCOUNT" -eq "$FILE_COUNT" ]; then
-    echo "Backed up merchant directory [$BACKUPCOUNT files]"
+  if [ -d "$BACKUP_PATH/merchant/" ] && [ "$BACKUP_COUNT" -eq "$FILE_COUNT" ]; then
+    echo "Backed up merchant directory [$BACKUP_COUNT/$FILE_COUNT files]"
   else
-    echo "Failed to back up merchant directory."
+    echo "Failed to back up merchant directory. [$BACKUP_COUNT/$FILE_COUNT files]"
     FAIL_COUNT=$((FAIL_COUNT+FILE_COUNT))
   fi
 else
@@ -99,11 +99,10 @@ if [ -f "appreg.db" ]; then
 else
   echo "No appreg.db file found"
 fi
+
 # END Message
 echo
 echo "Backup process completed."
 if [ "$FAIL_COUNT" -eq 0 ]; then
   echo "All files backed up successfully."
-else
-  echo "$FAIL_COUNT files failed to back up."
 fi
