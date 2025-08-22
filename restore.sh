@@ -28,7 +28,7 @@ fi
 
 # .assets
 if [ -d "$BACKUP_PATH/.assets" ]; then
-    cp -r "$BACKUP_PATH/.assets"/* /mnt/us/system/
+    cp -r "$BACKUP_PATH/.assets"/* /mnt/us/system/.assets
     if [ -d "/mnt/us/system/.assets" ]; then
         echo "Restored .assets directory"
         FILE_COUNTER=$((FILE_COUNTER + 1))
@@ -38,7 +38,7 @@ if [ -d "$BACKUP_PATH/.assets" ]; then
 fi
 # adunits/
 if [ -d "$BACKUP_PATH/adunits" ]; then
-    cp -r "$BACKUP_PATH/adunits"/* /var/local/
+    cp -r "$BACKUP_PATH/adunits"/* /var/local/adunits/
     if [ -d "/var/local/adunits" ]; then
         echo "Restored adunits directory"
         FILE_COUNTER=$((FILE_COUNTER + 1))
@@ -48,7 +48,7 @@ if [ -d "$BACKUP_PATH/adunits" ]; then
 fi
 # merchant/
 if [ -d "$BACKUP_PATH/merchant" ]; then
-    cp -r "$BACKUP_PATH/merchant"/* /var/local/
+    cp -r "$BACKUP_PATH/merchant"/* /var/local/merchant/
     if [ -d "/var/local/merchant" ]; then
         echo "Restored merchant directory"
         FILE_COUNTER=$((FILE_COUNTER + 1))
@@ -58,7 +58,7 @@ if [ -d "$BACKUP_PATH/merchant" ]; then
 fi
 # appreg.db
 if [ -f "$BACKUP_PATH/appreg.db" ]; then
-    cp "$BACKUP_PATH/appreg.db" /var/local/
+    cp "$BACKUP_PATH/appreg.db" /var/local/appreg.db
     if [ -f "/var/local/appreg.db" ]; then
         echo "Restored appreg.db"
         FILE_COUNTER=$((FILE_COUNTER + 1))
