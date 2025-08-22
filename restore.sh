@@ -38,8 +38,8 @@ if [ -d "$BACKUP_PATH/.assets" ]; then
 fi
 # adunits/
 if [ -d "$BACKUP_PATH/adunits" ]; then
-  cp -r "$BACKUP_PATH/adunits"/* /mnt/us/system/ads/
-  if [ -d "/mnt/us/system/adunits" ]; then
+  cp -r "$BACKUP_PATH/adunits"/* /var/local/
+  if [ -d "/var/local/adunits" ]; then
       echo "Restored adunits directory"
       FILE_COUNTER=$((FILE_COUNTER + 1))
   else
@@ -48,8 +48,8 @@ if [ -d "$BACKUP_PATH/adunits" ]; then
 fi
 # merchant/
 if [ -d "$BACKUP_PATH/merchant" ]; then
-  cp -r "$BACKUP_PATH/merchant"/* /mnt/us/system/ads/
-  if [ -d "/mnt/us/system/merchant" ]; then
+  cp -r "$BACKUP_PATH/merchant"/* /var/local/
+  if [ -d "/var/local/merchant" ]; then
       echo "Restored merchant directory"
       FILE_COUNTER=$((FILE_COUNTER + 1))
   else

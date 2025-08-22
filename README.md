@@ -14,7 +14,8 @@ This tool is for research purposes only. Use this tool at your own risk.
 | Kindle PW3   | 🟩 Works       |
 | Kindle PW2   | 🟨 Should Work |
 | Other        | 🟧 Unknown     |
-*You can report compatibility in the issues*
+
+*You can report compatibility of other devices in the issues*
 ## Requirements
 - Jailbroken Kindle device
 - Terminal emulator (KTerm or KoReader) **or** KUAL installed
